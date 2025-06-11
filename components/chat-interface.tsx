@@ -86,6 +86,18 @@ export function ChatInterface({ indexedDocs, onReindex }: ChatInterfaceProps) {
       }
     }
     fetchAndFilterModels()
+
+    const handleStorageChange = (e: StorageEvent) => {
+      if (e.key === 'enabledModels') {
+        fetchAndFilterModels()
+      }
+    }
+
+    window.addEventListener('storage', handleStorageChange)
+
+    return () => {
+      window.removeEventListener('storage', handleStorageChange)
+    }
   }, [])
 
   // Auto-scroll to bottom
