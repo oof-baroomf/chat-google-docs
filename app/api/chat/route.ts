@@ -80,8 +80,11 @@ Return only the keywords separated by commas, no other text.`
     const allResults = []
 
     for (const query of searchQueries) {
-      const results = await vectorStore.similaritySearch(query, 3)
-      allResults.push(...results)
+      const results = await vectorStore.similaritySearchWithScore(query, 3)
+      const filteredResults = results
+        .filter(([, score]) => score >= 0.4)
+        .map(([doc]) => doc)
+      allResults.push(...filteredResults)
     }
 
     // Remove duplicates and limit context

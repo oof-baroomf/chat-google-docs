@@ -7,6 +7,7 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
 import { Send, Bot, User, RefreshCw } from 'lucide-react'
 import { useToast } from '@/components/ui/use-toast'
+import { ThemeToggle } from './theme-toggle'
 
 interface ChatMessage {
   role: 'user' | 'assistant'
@@ -189,10 +190,11 @@ export function ChatInterface({ indexedDocs, onReindex }: ChatInterfaceProps) {
             <Button variant="outline" size="sm" onClick={onReindex}>
               <RefreshCw className="h-4 w-4" />
             </Button>
+            <ThemeToggle />
           </div>
         </CardHeader>
 
-        <CardContent className="flex-1 flex flex-col">
+        <CardContent className="flex-1 flex flex-col bg-background">
           <div className="flex-1 overflow-y-auto space-y-4 mb-4">
             {messages.length === 0 ? (
               <div className="text-center text-muted-foreground py-8">
