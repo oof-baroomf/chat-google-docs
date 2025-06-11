@@ -51,27 +51,42 @@ export function ChatInterface({ indexedDocs, onReindex }: ChatInterfaceProps) {
     }
   }, [messages])
 
-  // Fetch available models
+  // Fetch available models and filter based on settings
   useEffect(() => {
-    const fetchModels = async () => {
+    const fetchAndFilterModels = async () => {
       try {
         const response = await fetch('/api/models')
         if (response.ok) {
           const data = await response.json()
-          setAvailableModels(data.models)
-          if (data.models.length > 0 && !selectedModel) {
-            const storedModel = localStorage.getItem('selectedModel')
-            if (storedModel && data.models.some((m: ModelInfo) => m.id === storedModel)) {
-              setSelectedModel(storedModel)
-            }
+          const allModels = data.models
+          
+          const enabledModelsJson = localStorage.getItem('enabledModels')
+          const enabledModels = enabledModelsJson ? JSON.parse(enabledModelsJson) : []
+
+          const customModelsJson = localStorage.getItem('customModels')
+          const customModels = customModelsJson ? JSON.parse(customModelsJson) : []
+
+          const allAvailableModels = [...allModels, ...customModels];
+
+          const filteredModels = allAvailableModels.filter(model => enabledModels.includes(model.id));
+          
+          setAvailableModels(filteredModels)
+
+          const storedModel = localStorage.getItem('selectedModel')
+          if (storedModel && filteredModels.some((m: ModelInfo) => m.id === storedModel)) {
+            setSelectedModel(storedModel)
+          } else if (filteredModels.length > 0) {
+            setSelectedModel(filteredModels[0].id)
+          } else {
+            setSelectedModel('')
           }
         }
       } catch (error) {
         console.error('Error fetching models:', error)
       }
     }
-    fetchModels()
-  }, [selectedModel])
+    fetchAndFilterModels()
+  }, [])
 
   // Auto-scroll to bottom
   useEffect(() => {

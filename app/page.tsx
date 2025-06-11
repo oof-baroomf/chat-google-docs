@@ -43,7 +43,7 @@ export default function Home() {
       <div className="min-h-screen flex items-center justify-center bg-background">
         <Card className="w-full max-w-md">
           <CardHeader className="text-center">
-            <CardTitle className="flex items-center justify-center gap-2">
+            <CardTitle className="flex items-center justify-center gap-2 mb-2">
               <FileText className="h-6 w-6" />
               Chat with Google Docs
             </CardTitle>

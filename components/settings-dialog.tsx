@@ -8,6 +8,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/com
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
 import { Plus, Settings } from 'lucide-react'
 import { toast } from 'sonner'
+import { Checkbox } from '@/components/ui/checkbox'
 
 interface SettingsDialogProps {
   open: boolean
@@ -32,6 +33,7 @@ interface CustomModel {
 export function SettingsDialog({ open, onOpenChange }: SettingsDialogProps) {
   const [defaultModels, setDefaultModels] = useState<Model[]>([])
   const [customModels, setCustomModels] = useState<CustomModel[]>([])
+  const [enabledModels, setEnabledModels] = useState<string[]>([])
   const [newModel, setNewModel] = useState<{
     id: string;
     name: string;
@@ -43,7 +45,6 @@ export function SettingsDialog({ open, onOpenChange }: SettingsDialogProps) {
     nickname: '',
     provider: 'openai'
   })
-  const [selectedModel, setSelectedModel] = useState<string>('')
 
   useEffect(() => {
     async function fetchModels() {
@@ -66,9 +67,9 @@ export function SettingsDialog({ open, onOpenChange }: SettingsDialogProps) {
       setCustomModels(JSON.parse(saved))
     }
 
-    const savedSelected = localStorage.getItem('selectedModel')
-    if (savedSelected) {
-      setSelectedModel(savedSelected)
+    const savedEnabled = localStorage.getItem('enabledModels')
+    if (savedEnabled) {
+      setEnabledModels(JSON.parse(savedEnabled))
     }
   }, [])
 
@@ -76,6 +77,11 @@ export function SettingsDialog({ open, onOpenChange }: SettingsDialogProps) {
   useEffect(() => {
     localStorage.setItem('customModels', JSON.stringify(customModels))
   }, [customModels])
+
+  // Save enabled models to localStorage
+  useEffect(() => {
+    localStorage.setItem('enabledModels', JSON.stringify(enabledModels))
+  }, [enabledModels])
 
   const addCustomModel = () => {
     if (!newModel.id || !newModel.name || !newModel.nickname) {
@@ -100,13 +106,18 @@ export function SettingsDialog({ open, onOpenChange }: SettingsDialogProps) {
   const clearAllData = () => {
     localStorage.clear()
     setCustomModels([])
+    setEnabledModels([])
     toast.success("All app data has been cleared")
   }
 
-  const handleModelSelect = (modelId: string) => {
-    setSelectedModel(modelId)
-    localStorage.setItem('selectedModel', modelId)
-    toast.success("Default model has been updated")
+  const handleModelToggle = (modelId: string) => {
+    setEnabledModels(prev => {
+      if (prev.includes(modelId)) {
+        return prev.filter(id => id !== modelId)
+      } else {
+        return [...prev, modelId]
+      }
+    })
   }
 
   return (
@@ -128,26 +139,31 @@ export function SettingsDialog({ open, onOpenChange }: SettingsDialogProps) {
             <CardHeader>
               <CardTitle>Models</CardTitle>
               <CardDescription>
-                Manage available models and add your own custom configurations.
+                Select which models to show in the chat interface.
               </CardDescription>
             </CardHeader>
             <CardContent className="space-y-4">
               <div className="space-y-2">
-                <label className="text-sm font-medium">Default Chat Model</label>
-                <Select value={selectedModel} onValueChange={handleModelSelect}>
-                  <SelectTrigger>
-                    <SelectValue placeholder="Select a model" />
-                  </SelectTrigger>
-                  <SelectContent>
-                    {[...defaultModels, ...customModels]
-                      .filter(model => ('available' in model ? model.available !== false : true))
-                      .map((model) => (
-                        <SelectItem key={model.id} value={model.id}>
+                <label className="text-sm font-medium">Enabled Chat Models</label>
+                <div className="space-y-2">
+                  {[...defaultModels, ...customModels]
+                    .filter(model => ('available' in model ? model.available !== false : true))
+                    .map((model) => (
+                      <div key={model.id} className="flex items-center space-x-2">
+                        <Checkbox
+                          id={model.id}
+                          checked={enabledModels.includes(model.id)}
+                          onCheckedChange={() => handleModelToggle(model.id)}
+                        />
+                        <label
+                          htmlFor={model.id}
+                          className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
+                        >
                           {model.nickname || model.name} ({model.provider})
-                        </SelectItem>
-                    ))}
-                  </SelectContent>
-                </Select>
+                        </label>
+                      </div>
+                  ))}
+                </div>
               </div>
             </CardContent>
           </Card>
