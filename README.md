@@ -119,11 +119,7 @@ Open [http://localhost:3000](http://localhost:3000) in your browser.
 
 ## Supported Models
 
-The application dynamically fetches available models based on your API keys:
-
-- **OpenAI**: GPT-4o, GPT-4o Mini, GPT-4 Turbo, GPT-3.5 Turbo
-- **Google**: Gemini 1.5 Pro, Gemini 1.5 Flash, Gemini 1.0 Pro
-- **Anthropic**: Claude 3.5 Sonnet, Claude 3.5 Haiku, Claude 3 Opus
+The application dynamically fetches available models based on your API keys, so it supports anything supported by the provider at any time.
 
 ## Deployment
 
