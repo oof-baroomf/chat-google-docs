@@ -4,14 +4,14 @@ An AI-powered chat interface that allows you to have conversations with your Goo
 
 ## Features
 
-- 🔐 **Google OAuth2 Authentication** - Secure access to your Google Docs
-- 📄 **Document Indexing** - Automatically indexes your Google Docs with vector embeddings
-- 🤖 **Multi-Model Support** - Works with OpenAI GPT, Google Gemini, and Anthropic Claude models
-- 💬 **Streaming Chat** - Real-time streaming responses from AI models
-- 🔍 **Smart Search** - Uses vector similarity search to find relevant document content
-- 📚 **Source Attribution** - Shows which documents were used to generate responses
-- ⚙️ **Custom Models** - Add your own model configurations
-- 💾 **Local Storage** - All data stored locally, no external database required
+- **Google OAuth2 Authentication**: Securely access your Google Docs.
+- **Document Indexing**: Automatically index your Google Docs using vector embeddings.
+- **Multi-Model Support**: Works with OpenAI GPT, Google Gemini, and Anthropic Claude models.
+- **Streaming Chat**: Get real-time streaming responses from AI models.
+- **Smart Search**: Uses vector similarity search to find relevant document content.
+- **Source Attribution**: See which documents were used to generate responses.
+- **Custom Models**: Add your own model configurations.
+- **Local Storage**: All data is stored locally in your browser; no external database required.
 
 ## Prerequisites
 
@@ -125,83 +125,15 @@ The application dynamically fetches available models based on your API keys:
 - **Google**: Gemini 1.5 Pro, Gemini 1.5 Flash, Gemini 1.0 Pro
 - **Anthropic**: Claude 3.5 Sonnet, Claude 3.5 Haiku, Claude 3 Opus
 
-## Development
-
-### Project Structure
-
-```
-├── app/                    # Next.js app directory
-│   ├── api/               # API routes
-│   │   ├── auth/          # NextAuth configuration
-│   │   ├── chat/          # Chat endpoint
-│   │   ├── models/        # Available models endpoint
-│   │   └── index-docs/    # Document indexing endpoint
-│   ├── globals.css        # Global styles
-│   ├── layout.tsx         # Root layout
-│   ├── page.tsx           # Home page
-│   └── providers.tsx      # Context providers
-├── components/            # React components
-│   ├── ui/               # shadcn/ui components
-│   ├── chat-interface.tsx # Main chat interface
-│   ├── document-indexer.tsx # Document indexing UI
-│   └── settings-dialog.tsx # Settings modal
-├── lib/                  # Utility functions
-└── public/              # Static assets
-```
-
-### Key Technologies
-
-- **Next.js 15**: React framework with App Router
-- **TypeScript**: Type safety
-- **Tailwind CSS**: Utility-first CSS framework
-- **shadcn/ui**: Component library
-- **LangChain**: LLM abstraction and vector operations
-- **NextAuth.js**: Authentication
-- **Google APIs**: Document access
-
 ## Deployment
 
-1. Set up your production environment variables
-2. Update `NEXTAUTH_URL` to your production URL
-3. Add production URL to Google OAuth2 authorized redirect URIs
-4. Deploy to your preferred platform (Vercel, Netlify, etc.)
+To deploy this application, follow these steps:
 
-## Troubleshooting
-
-### Common Issues
-
-1. **"Unauthorized" errors**: Check your Google OAuth2 setup and API keys
-2. **No models available**: Ensure at least one API key is properly set
-3. **Indexing fails**: Verify Google Docs and Drive API are enabled
-4. **TypeScript errors**: Run `pnpm install` to ensure all dependencies are installed
-
-### Debug Mode
-
-Set `NODE_ENV=development` to see detailed error logs in the console.
-
-## Contributing
-
-1. Fork the repository
-2. Create a feature branch
-3. Make your changes
-4. Test thoroughly
-5. Submit a pull request
+1.  Set up your production environment variables in a `.env.local` file.
+2.  Update `NEXTAUTH_URL` to your application's production URL.
+3.  Add the production URL to your Google OAuth2 authorized redirect URIs.
+4.  Deploy the application to your preferred platform (e.g., Vercel, Netlify).
 
 ## License
 
-MIT License - see LICENSE file for details.
-
-## Security
-
-- All API keys should be kept secure and never committed to version control
-- The application only requests read-only access to your Google Docs
-- All data is stored locally in your browser
-- No data is sent to external services except for AI model inference
-
-## Support
-
-For issues and questions, please open a GitHub issue with:
-- Your environment details
-- Steps to reproduce the issue
-- Error messages (if any)
-- Screenshots (if applicable)
+This project is licensed under the MIT License. See the `LICENSE` file for details.

@@ -60,7 +60,10 @@ export function ChatInterface({ indexedDocs, onReindex }: ChatInterfaceProps) {
           const data = await response.json()
           setAvailableModels(data.models)
           if (data.models.length > 0 && !selectedModel) {
-            setSelectedModel(data.models[0].id)
+            const storedModel = localStorage.getItem('selectedModel')
+            if (storedModel && data.models.some((m: ModelInfo) => m.id === storedModel)) {
+              setSelectedModel(storedModel)
+            }
           }
         }
       } catch (error) {
@@ -221,9 +224,21 @@ export function ChatInterface({ indexedDocs, onReindex }: ChatInterfaceProps) {
                       )}
                     </div>
                     <div className="flex-1">
-                      <div className="prose prose-sm max-w-none">
-                        {message.content}
-                      </div>
+                      {message.content ? (
+                        <div className="prose prose-sm max-w-none">
+                          {message.content}
+                        </div>
+                      ) : (
+                        isLoading && index === messages.length - 1 && (
+                          <div className="flex items-center h-6">
+                            <div className="loading-dots">
+                              <div></div>
+                              <div></div>
+                              <div></div>
+                            </div>
+                          </div>
+                        )
+                      )}
                       {message.sources && message.sources.length > 0 && (
                         <div className="mt-2 flex flex-wrap gap-1">
                           {message.sources.map((source, idx) => (
@@ -237,18 +252,6 @@ export function ChatInterface({ indexedDocs, onReindex }: ChatInterfaceProps) {
                   </div>
                 </div>
               ))
-            )}
-            {isLoading && (
-              <div className="chat-message assistant-message">
-                <div className="flex items-start gap-3">
-                  <Bot className="h-6 w-6 flex-shrink-0" />
-                  <div className="loading-dots">
-                    <div></div>
-                    <div></div>
-                    <div></div>
-                  </div>
-                </div>
-              </div>
             )}
             <div ref={messagesEndRef} />
           </div>

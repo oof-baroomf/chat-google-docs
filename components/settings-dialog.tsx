@@ -6,8 +6,7 @@ import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
-import { Badge } from '@/components/ui/badge'
-import { Plus, Trash2, Settings } from 'lucide-react'
+import { Plus, Settings } from 'lucide-react'
 import { toast } from 'sonner'
 
 interface SettingsDialogProps {
@@ -44,6 +43,7 @@ export function SettingsDialog({ open, onOpenChange }: SettingsDialogProps) {
     nickname: '',
     provider: 'openai'
   })
+  const [selectedModel, setSelectedModel] = useState<string>('')
 
   useEffect(() => {
     async function fetchModels() {
@@ -64,6 +64,11 @@ export function SettingsDialog({ open, onOpenChange }: SettingsDialogProps) {
     const saved = localStorage.getItem('customModels')
     if (saved) {
       setCustomModels(JSON.parse(saved))
+    }
+
+    const savedSelected = localStorage.getItem('selectedModel')
+    if (savedSelected) {
+      setSelectedModel(savedSelected)
     }
   }, [])
 
@@ -91,15 +96,17 @@ export function SettingsDialog({ open, onOpenChange }: SettingsDialogProps) {
     toast.success(`${model.nickname} has been added to your custom models`)
   }
 
-  const removeCustomModel = (id: string) => {
-    setCustomModels(prev => prev.filter(model => model.id !== id))
-    toast.success("Custom model has been removed")
-  }
 
   const clearAllData = () => {
     localStorage.clear()
     setCustomModels([])
     toast.success("All app data has been cleared")
+  }
+
+  const handleModelSelect = (modelId: string) => {
+    setSelectedModel(modelId)
+    localStorage.setItem('selectedModel', modelId)
+    toast.success("Default model has been updated")
   }
 
   return (
@@ -125,54 +132,23 @@ export function SettingsDialog({ open, onOpenChange }: SettingsDialogProps) {
               </CardDescription>
             </CardHeader>
             <CardContent className="space-y-4">
-              {/* Default Models List */}
-              {defaultModels.length > 0 && (
-                <div className="space-y-2">
-                  <h4 className="text-sm font-medium">Default Models</h4>
-                  <div className="grid grid-cols-1 md:grid-cols-2 gap-2">
-                    {defaultModels.map((model) => (
-                      <div key={model.id} className="flex items-center justify-between p-3 border rounded-lg">
-                        <div className="flex items-center gap-3">
-                          <div>
-                            <div className="font-medium">{model.name}</div>
-                            <div className="text-xs text-muted-foreground">{model.id}</div>
-                          </div>
-                          <Badge variant="secondary">{model.provider}</Badge>
-                        </div>
-                        <Badge variant={model.available ? "default" : "outline"}>
-                          {model.available ? "Available" : "Unavailable"}
-                        </Badge>
-                      </div>
+              <div className="space-y-2">
+                <label className="text-sm font-medium">Default Chat Model</label>
+                <Select value={selectedModel} onValueChange={handleModelSelect}>
+                  <SelectTrigger>
+                    <SelectValue placeholder="Select a model" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    {[...defaultModels, ...customModels]
+                      .filter(model => ('available' in model ? model.available !== false : true))
+                      .map((model) => (
+                        <SelectItem key={model.id} value={model.id}>
+                          {model.nickname || model.name} ({model.provider})
+                        </SelectItem>
                     ))}
-                  </div>
-                </div>
-              )}
-
-              {/* Custom Models List */}
-              {customModels.length > 0 && (
-                <div className="space-y-2">
-                  <h4 className="text-sm font-medium">Your Custom Models</h4>
-                  {customModels.map((model) => (
-                    <div key={model.id} className="flex items-center justify-between p-3 border rounded-lg">
-                      <div className="flex items-center gap-3">
-                        <div>
-                          <div className="font-medium">{model.nickname}</div>
-                          <div className="text-sm text-muted-foreground">{model.name}</div>
-                          <div className="text-xs text-muted-foreground">{model.id}</div>
-                        </div>
-                        <Badge variant="secondary">{model.provider}</Badge>
-                      </div>
-                      <Button
-                        variant="outline"
-                        size="sm"
-                        onClick={() => removeCustomModel(model.id)}
-                      >
-                        <Trash2 className="h-4 w-4" />
-                      </Button>
-                    </div>
-                  ))}
-                </div>
-              )}
+                  </SelectContent>
+                </Select>
+              </div>
             </CardContent>
           </Card>
           
