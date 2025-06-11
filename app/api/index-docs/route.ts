@@ -34,12 +34,11 @@ export async function POST() {
     })
 
     const files = driveResponse.data.files || []
-    const indexedDocs: IndexedDoc[] = []
 
-    // Process each document
-    for (const file of files) {
+    // Process documents in parallel
+    const processingPromises = files.map(async (file) => {
       try {
-        if (!file.id) continue
+        if (!file.id) return null
 
         // Get document content
         const docResponse = await docs.documents.get({
@@ -55,21 +54,23 @@ export async function POST() {
         }
 
         // Skip empty documents
-        if (content.trim().length === 0) continue
+        if (content.trim().length === 0) return null
 
-        indexedDocs.push({
+        return {
           id: file.id,
           title: file.name || 'Untitled Document',
           content: content.trim(),
           url: file.webViewLink || `https://docs.google.com/document/d/${file.id}/edit`,
           lastModified: file.modifiedTime || new Date().toISOString()
-        })
-
+        }
       } catch (docError) {
         console.error(`Error processing document ${file.id}:`, docError)
-        // Continue with other documents
+        return null // Continue with other documents
       }
-    }
+    })
+
+    const results = await Promise.all(processingPromises)
+    const indexedDocs = results.filter((doc): doc is IndexedDoc => doc !== null)
 
     return NextResponse.json({ 
       documents: indexedDocs,
