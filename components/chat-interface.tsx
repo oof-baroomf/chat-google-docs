@@ -5,7 +5,7 @@ import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
-import { Send, Bot, User, RefreshCw, Settings } from 'lucide-react'
+import { Send, Bot, User, RefreshCw } from 'lucide-react'
 import { useToast } from '@/components/ui/use-toast'
 
 interface ChatMessage {
@@ -15,7 +15,7 @@ interface ChatMessage {
 }
 
 interface ChatInterfaceProps {
-  indexedDocs: any[]
+  indexedDocs: { id: string; title: string; url: string; }[]
   onReindex: () => void
 }
 
@@ -104,7 +104,7 @@ export function ChatInterface({ indexedDocs, onReindex }: ChatInterfaceProps) {
       const reader = response.body?.getReader()
       if (!reader) throw new Error('No reader available')
 
-      let assistantMessage: ChatMessage = { role: 'assistant', content: '', sources: [] }
+      const assistantMessage: ChatMessage = { role: 'assistant', content: '', sources: [] }
       setMessages(prev => [...prev, assistantMessage])
 
       const decoder = new TextDecoder()
@@ -136,7 +136,7 @@ export function ChatInterface({ indexedDocs, onReindex }: ChatInterfaceProps) {
                   return newMessages
                 })
               }
-            } catch (e) {
+            } catch {
               // Ignore parsing errors for streaming
             }
           }

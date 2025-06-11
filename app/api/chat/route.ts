@@ -8,6 +8,7 @@ import { OpenAIEmbeddings } from '@langchain/openai'
 import { MemoryVectorStore } from 'langchain/vectorstores/memory'
 import { Document } from 'langchain/document'
 
+export const dynamic = 'force-dynamic'
 interface ChatMessage {
   role: 'user' | 'assistant'
   content: string
@@ -18,7 +19,13 @@ interface ChatRequest {
   message: string
   history: ChatMessage[]
   model: string
-  indexedDocs: any[]
+  indexedDocs: {
+    id: string;
+    title: string;
+    content: string;
+    url: string;
+    lastModified: string;
+  }[];
 }
 
 export async function POST(req: NextRequest) {

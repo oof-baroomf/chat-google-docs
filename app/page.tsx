@@ -12,7 +12,7 @@ import { Settings, LogOut, FileText } from 'lucide-react'
 export default function Home() {
   const { data: session, status } = useSession()
   const [isIndexing, setIsIndexing] = useState(false)
-  const [indexedDocs, setIndexedDocs] = useState<any[]>([])
+  const [indexedDocs, setIndexedDocs] = useState<{ id: string; title: string; url: string; }[]>([])
   const [showSettings, setShowSettings] = useState(false)
 
   useEffect(() => {
@@ -99,7 +99,7 @@ export default function Home() {
               <CardHeader>
                 <CardTitle>Welcome to Chat with Google Docs</CardTitle>
                 <CardDescription>
-                  First, let's index your Google Docs to enable AI-powered conversations
+                  First, index your Google Docs to enable AI-powered conversations
                 </CardDescription>
               </CardHeader>
               <CardContent>

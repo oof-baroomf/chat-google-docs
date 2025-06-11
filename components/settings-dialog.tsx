@@ -24,11 +24,16 @@ interface CustomModel {
 
 export function SettingsDialog({ open, onOpenChange }: SettingsDialogProps) {
   const [customModels, setCustomModels] = useState<CustomModel[]>([])
-  const [newModel, setNewModel] = useState({
+  const [newModel, setNewModel] = useState<{
+    id: string;
+    name: string;
+    nickname: string;
+    provider: 'openai' | 'google' | 'anthropic';
+  }>({
     id: '',
     name: '',
     nickname: '',
-    provider: 'openai' as const
+    provider: 'openai'
   })
   const { toast } = useToast()
 

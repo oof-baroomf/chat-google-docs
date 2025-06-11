@@ -1,7 +1,9 @@
-import { NextRequest, NextResponse } from 'next/server'
+import { NextResponse } from 'next/server'
 import { getServerSession } from 'next-auth'
-import { google } from 'googleapis'
+import { google, docs_v1 } from 'googleapis'
+import { authOptions } from '@/lib/auth'
 
+export const dynamic = 'force-dynamic'
 interface IndexedDoc {
   id: string
   title: string
@@ -10,9 +12,9 @@ interface IndexedDoc {
   lastModified: string
 }
 
-export async function POST(req: NextRequest) {
+export async function POST() {
   try {
-    const session = await getServerSession()
+    const session = await getServerSession(authOptions)
     if (!session?.accessToken) {
       return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
     }
@@ -80,7 +82,7 @@ export async function POST(req: NextRequest) {
   }
 }
 
-function extractTextFromContent(content: any[]): string {
+function extractTextFromContent(content: docs_v1.Schema$StructuralElement[]): string {
   let text = ''
 
   for (const element of content) {

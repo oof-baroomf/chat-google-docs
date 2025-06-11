@@ -2,13 +2,13 @@
 
 import { useState } from 'react'
 import { Button } from '@/components/ui/button'
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
+import { Card, CardContent } from '@/components/ui/card'
 import { FileText, Loader2, CheckCircle } from 'lucide-react'
 import { useToast } from '@/components/ui/use-toast'
 
 interface DocumentIndexerProps {
   onIndexingStart: () => void
-  onIndexingComplete: (docs: any[]) => void
+  onIndexingComplete: (docs: { id: string; title: string; url: string; }[]) => void
   isIndexing: boolean
 }
 
@@ -58,7 +58,7 @@ export function DocumentIndexer({ onIndexingStart, onIndexingComplete, isIndexin
         <FileText className="h-12 w-12 mx-auto mb-4 text-muted-foreground" />
         <h3 className="text-lg font-semibold mb-2">Index Your Google Docs</h3>
         <p className="text-muted-foreground mb-6">
-          We'll scan your Google Docs and create vector embeddings to enable AI-powered search and chat.
+          We can scan your Google Docs and create vector embeddings to enable AI-powered search and chat.
         </p>
       </div>
 
