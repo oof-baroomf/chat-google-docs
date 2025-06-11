@@ -8,6 +8,15 @@ interface ModelInfo {
   available: boolean
 }
 
+interface OpenAIModel {
+  id: string;
+}
+
+interface GoogleModel {
+  name: string;
+  displayName: string;
+}
+
 export async function GET() {
   try {
     const session = await getServerSession()
@@ -28,8 +37,8 @@ export async function GET() {
         if (!response.ok) throw new Error('Failed to fetch OpenAI models')
         const { data } = await response.json()
         const openAIModels = data
-          .filter((model: any) => model.id.includes('gpt'))
-          .map((model: any) => ({
+          .filter((model: OpenAIModel) => model.id.includes('gpt'))
+          .map((model: OpenAIModel) => ({
             id: model.id,
             name: model.id,
             provider: 'openai',
@@ -58,8 +67,8 @@ export async function GET() {
         if (!response.ok) throw new Error('Failed to fetch Google models')
         const { models: googleModels } = await response.json()
         const geminiModels = googleModels
-          .filter((model: any) => model.name.includes('gemini'))
-          .map((model: any) => ({
+          .filter((model: GoogleModel) => model.name.includes('gemini'))
+          .map((model: GoogleModel) => ({
             id: model.name,
             name: model.displayName,
             provider: 'google',
